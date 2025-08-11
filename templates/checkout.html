@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Checkout</h2>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.address_id.label(class="form-label") }}
+            {{ form.address_id(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            {{ form.payment_method.label(class="form-label") }}
+            {{ form.payment_method(class="form-select") }}
+        </div>
+
+        <div class="mb-3">
+            <strong>Total:</strong> {{ total }} PKR
+        </div>
+
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </form>
+</div>
+{% endblock %}

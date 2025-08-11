@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>{% block title %}My App{% endblock %}</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+    </style>
+
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-light">
+{%block navbar%}
+<header>
+    <div class="px-3 py-2 text-bg-dark border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start"><a href="/"
+                                                                                                                class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+                <i class="bi bi-speedometer2"></i>
+            </a>
+                <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+                    <li><a href={{url_for('home')}}
+                           class="nav-link nav-link {% if request.endpoint == 'home' %}text-secondary{% else %}text-white{% endif %}">
+                        <i class="bi bi-person-circle"></i>
+                        Profile
+                    </a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle {% if request.endpoint == 'dashboard' %}text-secondary{% else %}text-white{% endif %}"
+                           href="#" id="categoriesDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-speedometer2"></i>
+                            Category
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="categoriesDropdown">
+                            {% for cat in nav_categories %}
+                            <li><a class="dropdown-item" href="{{ url_for('category_products', category_id=cat.id) }}">{{
+                                cat.name }}</a></li>
+                            {% endfor %}
+                            <li><a class="dropdown-item">{{
+                                haha }}</a></li>
+                        </ul>
+                    </li>
+
+                    <li><a href="{{url_for('my_orders')}}"
+                           class="nav-link {% if request.endpoint == 'my_orders' %}text-secondary{% else %}text-white{% endif %}">
+                        <i class="bi bi-table"></i>
+                        Orders
+                    </a></li>
+                    <li><a href="{{url_for('products')}}"
+                           class="nav-link {% if request.endpoint == 'products' %}text-secondary{% else %}text-white{% endif %}">
+                        <i class="bi bi-grid"></i>
+                        Products
+                    </a></li>
+                    <li><a href="{{url_for('view_cart')}}"
+                           class="nav-link {% if request.endpoint == 'view_cart' %}text-secondary{% else %}text-white{% endif %}">
+                        <i class="bi bi-cart"></i>
+                        My Cart
+                    </a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="px-3 py-2 border-bottom mb-3">
+        <div class="container d-flex flex-wrap justify-content-center">
+            <form class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto" role="search"><input type="search"
+                                                                                          class="form-control"
+                                                                                          placeholder="Search..."
+                                                                                          aria-label="Search"></form>
+            <div class="text-end">
+
+                {% if current_user.is_authenticated %}
+                <a class="btn btn-info
+                 text-light me-2" href="{{ url_for('add_address') }}">Add Address</a>
+                {% if current_user.is_admin %}
+                <a class="btn btn-warning text-light me-2" href="{{ url_for('add_product') }}">Add Product</a>
+                <a class="btn btn-danger text-light me-2" href="{{ url_for('add_category') }}">Add Category</a>
+                {% endif %}
+                <a class="btn btn-light text-dark me-2" href="{{ url_for('logout') }}">Logout</a>
+                {% else %}
+                <a class="btn btn-light text-dark me-2" href="{{ url_for('login') }}">Login</a>
+                <a class="btn btn-primary text-light me-2" href="{{url_for('signup')}}">Sign-up</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</header>
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+</div>
+{%endblock%}
+
+{% block content %}
+<!-- Page-specific content will go here -->
+{% endblock %}
+
+<!-- Bootstrap JS Bundle -->
+<!-- Bootstrap JS Bundle (choose only one) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+        crossorigin="anonymous"></script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

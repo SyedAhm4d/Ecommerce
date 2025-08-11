@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">All Products</h2>
+    <div class="row row-cols-1 row-cols-md-5 g-4">
+
+        {% for product in items %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}">
+                {% else %}
+                <img src="{{ url_for('static', filename='placeholder.jpg') }}" class="card-img-top" alt="No image">
+                {% endif %}
+
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text">{{ product.description[:100] }}</p>
+                    <small>Category: {{ product.category.name if product.category else 'None' }}</small><br>
+                    <small>Stock: {{ product.stock_quantity }}</small>
+                    <p class="card-text">
+                        <strong>Rs. {{ product.price }}</strong>
+                        {% if product.discount %}
+                        <span class="badge bg-success ms-2">{{ product.discount }}% off</span>
+                        {% endif %}
+                        {% if not product.stock_quantity %}
+                        <span class="badge bg-danger text-white ms-2">Out of Stock</span>
+                        {%endif%}
+                    </p>
+                </div>
+
+                <div class="card-footer text-muted d-flex justify-content-between">
+                    <form id='quantform{{loop.index}}' action="{{ url_for('add_to_cart', product_id=product.id) }}"
+                          method="POST">
+                        <input type="number" name="quantity" class="form-control me-2" style="width:50px" value="1"
+                               min="1" required>
+                    </form>
+                    <button type="submit" form="quantform{{loop.index}}" class="btn btn-warning text-light">Add to Cart</button>
+
+                </div>
+                {%if user_is_admin%}
+                <div class="card-footer text-muted d-flex justify-content-between">
+                    <a class="btn btn-danger text-light me-2"
+                       href="{{ url_for('remove_product',id=product.id) }}">Remove</a>
+                    <a class="btn btn-success text-light me-2" href="{{ url_for('update_product',id=product.id) }}">Update</a>
+                </div>
+                {%endif%}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>My Orders</h2>
+    {% if orders %}
+    <table class="table table-hover mt-4">
+        <thead class="table-light">
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>View</th>
+            <th>Cancel</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{loop.index }}</td>
+            <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ order.status.title() }}</td>
+            <td>{{ order.total_amount }} PKR</td>
+            <td>{{ order.payment_method }}</td>
+            <td>
+                <a href="{{ url_for('order_summary', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                    View Details
+                </a>
+            </td>
+            <td>
+                {% if order.status.upper()=='PENDING'%}
+                <a href="{{ url_for('cancel_order', order_id=order.id) }}" class="btn btn-sm btn-danger">
+                    Cancel Order
+                </a>
+                {%else%}
+                <a></a>
+                {%endif%}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info mt-3">You haven't placed any orders yet.</div>
+    {% endif %}
+    <hr>
+    {%if current_user.is_admin%}
+    <h2>Client Orders</h2>
+    <table class="table table-hover mt-4">
+        <thead class="table-light">
+        <tr>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Total</th>
+            <th>Payment</th>
+            <th>View</th>
+            <th>Update Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for order in not_admin %}
+        <tr>
+            <td>#{{loop.index }}</td>
+            <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ order.status.title() }}</td>
+            <td>{{ order.total_amount }} PKR</td>
+            <td>{{ order.payment_method }}</td>
+            <td>
+                <a href="{{ url_for('order_summary', order_id=order.id) }}" class="btn btn-sm btn-primary">
+                    View Details
+                </a>
+            </td>
+            <td>
+                {% if order.status.upper()=='PENDING'%}
+                <a href="{{ url_for('update_order', order_id=order.id) }}" class="btn btn-sm btn-outline-info">
+                    Paid
+                </a>
+                {% elif order.status.upper()=='PAID'%}
+                <a href="{{ url_for('update_order', order_id=order.id) }}" class="btn btn-sm btn-outline-primary">
+                    Delivered
+                </a>
+                {%else%}
+                <button class="btn btn-sm btn-success">
+                    Closed
+                </button>
+                {%endif%}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {%endif%}
+</div>
+{% endblock %}

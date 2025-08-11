@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2>Order Summary</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Order ID: {{ order.id }}</h5>
+            <p>Status: <strong>{{ order.status }}</strong></p>
+            <p>Total: <strong>{{ order.total_amount }} PKR</strong></p>
+            <p>Payment Method: {{ order.payment_method }}</p>
+            <p>Placed On: {{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+        </div>
+    </div>
+
+    <h5>Shipping Address</h5>
+    <div class="card mb-4">
+        <div class="card-body">
+            <p>{{ order.address.full_name }}</p>
+            <p>{{ order.address.street }}{% if order.address.address_line2 %}, {{ order.address.address_line2 }}{% endif %}</p>
+            <p>{{ order.address.city }}, {{ order.address.zip_code }}</p>
+            <p>{{ order.address.country }}</p>
+            <p>Phone: {{ order.address.phone }}</p>
+        </div>
+    </div>
+
+    <h5>Items</h5>
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price Each</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price_each }} PKR</td>
+                <td>{{ item.quantity * item.price_each }} PKR</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-end">
+        <h5>Total: {{ order.total_amount }} PKR</h5>
+    </div>
+</div>
+{% endblock %}

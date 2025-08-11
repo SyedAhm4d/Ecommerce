@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{%block content%}
+
+<div class="container d-flex flex-column justify-content-center align-items-center pt-3 border">
+    {%for item in product_ids%}
+    <div class="card mb-3" style="width: 800px;">
+        <div class="row g-0" style="">
+            <div class="col-md-4">
+                <img src="{{ item.image_url }}" class="img-fluid rounded-start" alt="{{ item.name }}">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{ item.name }}</h5>
+                    <p class="card-text mb-1">{{ item.description }}</p>
+                    <p class="card-text mb-1">
+                        <strong>Price:</strong> ${{ item.price }}<br>
+                        <strong>In Cart:</strong> {{ cart_items[loop.index0].quantity }}<br>
+
+                        {% set subtotal = item.price * cart_items[loop.index0].quantity %}
+                        {% if item.discount %}
+                        {% set discount_amount = (subtotal * item.discount / 100) %}
+                        {% set final_price = subtotal - discount_amount %}
+                        <strong>Discount:</strong> {{ item.discount }}%<br>
+                        <strong>Subtotal:</strong> <s>${{ "%.2f"|format(subtotal) }}</s><br>
+                        <strong>Final Price:</strong> ${{ "%.2f"|format(final_price) }}
+                        {% else %}
+                        <strong>Subtotal:</strong> ${{ "%.2f"|format(subtotal) }}
+                        {% endif %}
+                    </p>
+                    <p class="card-text">
+                        <small class="text-body-secondary">Added on {{ item.created_at.strftime('%b %d, %Y') }}</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer text-muted d-flex justify-content-between align-items-center">
+            <small>Category: {{ item.category.name if item.category else 'None' }}</small>
+            <small>Stock: {{ item.stock_quantity }}</small>
+            <div class="input-group" style="width: 150px;">
+                <a class="btn btn-outline-secondary" href="{{url_for('update_quantity',id=cart_items[loop.index0].id,action='minus')}}">−</a>
+                <input type="number" id="quantityInput" style="width:50px" name="quantity" class="form-control text-center" value="{{cart_items[loop.index0].quantity}}"
+                       min="1" required>
+                <a class="btn btn-outline-secondary" type="button" href="{{url_for('update_quantity',id=cart_items[loop.index0].id,action='add')}}">+</a>
+            </div>
+            <a class="btn btn-sm btn-outline-danger"
+               href="{{ url_for('remove_from_cart', cart_item=cart_items[loop.index0].id) }}">Remove</a>
+        </div>
+    </div>
+    {%endfor%}
+    <div class="card text-end mt-4 mx-auto mb-3" style="width: 540px;">
+        <div class="card-body d-flex flex-rows justify-content-between align-items-center">
+            <h5 class="card-text fw-bold fs-5">Total Amount :${{ "%.2f"|format(total) }}
+            </h5>
+            <a class="btn btn-success m-1" href="{{url_for('checkout',total=total)}}">Check Out</a>
+        </div>
+    </div>
+</div>
+
+
+{%endblock%}

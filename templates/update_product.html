@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Add New Product</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
+            {{ form.name(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label(class="form-label") }}
+            {{ form.description(class="form-control", rows="3") }}
+        </div>
+        <div class="mb-3">
+            {{ form.price.label(class="form-label") }}
+            {{ form.price(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.discount.label(class="form-label") }}
+            {{ form.discount(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.stock_quantity.label(class="form-label") }}
+            {{ form.stock_quantity(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.image_url.label(class="form-label") }}
+            {{ form.image_url(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.category_id.label(class="form-label") }}
+            {{ form.category_id(class="form-select") }}
+        </div>
+        <button type="submit" class="btn btn-primary">{{ form.submit.label.text }}</button>
+    </form>
+</div>
+{% endblock %}
